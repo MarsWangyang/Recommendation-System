@@ -1,0 +1,138 @@
+{
+    "type": "bubble",
+    "hero": {
+        "type": "image",
+        "url": "https://cdn-icons-png.flaticon.com/512/4403/4403384.png",
+        "size": "full",
+        "aspectRatio": "20:13",
+        "aspectMode": "fit",
+        "backgroundColor": "#B0BEC5"
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "Bot Title",
+                "weight": "bold",
+                "size": "xxl"
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "margin": "lg",
+                "spacing": "sm",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "baseline",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "icon",
+                                "url": "https://cdn-icons-png.flaticon.com/512/64/64494.png"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Intro.",
+                                "color": "#aaaaaa",
+                                "size": "sm",
+                                "flex": 1
+                            },
+                            {
+                                "type": "text",
+                                "text": "intro_text",
+                                "wrap": true,
+                                "color": "#666666",
+                                "size": "sm",
+                                "flex": 4
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "baseline",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "icon",
+                                "url": "https://cdn-icons.flaticon.com/png/512/552/premium/552721.png?token=exp=1640527849~hmac=6da052ba127d2a782afba8eee0c9aa2b"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Author",
+                                "flex": 1,
+                                "size": "sm",
+                                "color": "#aaaaaa"
+                            },
+                            {
+                                "type": "text",
+                                "text": "author_name",
+                                "wrap": true,
+                                "color": "#666666",
+                                "size": "sm",
+                                "flex": 4
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "baseline",
+                        "contents": [
+                            {
+                                "type": "icon",
+                                "url": "https://cdn-icons.flaticon.com/png/512/721/premium/721550.png?token=exp=1640528089~hmac=4077b9fded4affec2e163e5d2e32c0d4"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Tag",
+                                "color": "#aaaaaa",
+                                "size": "sm",
+                                "flex": 1,
+                                "margin": "xs"
+                            },
+                            {
+                                "type": "text",
+                                "text": "hello, world",
+                                "flex": 4,
+                                "size": "sm",
+                                "color": "#666666",
+                                "margin": "sm"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "sm",
+        "contents": [
+            {
+                "type": "button",
+                "style": "primary",
+                "height": "sm",
+                "action": {
+                    "type": "uri",
+                    "label": "點擊前往",
+                    "uri": "https://linecorp.com"
+                }
+            },
+            {
+                "type": "button",
+                "style": "primary",
+                "height": "sm",
+                "action": {
+                    "type": "postback",
+                    "label": "Give me a Like 👍 ",
+                    "data": "like=plus_one",
+                    "displayText": "已給讚"
+                }
+            }
+        ],
+        "flex": 0
+    }
+}

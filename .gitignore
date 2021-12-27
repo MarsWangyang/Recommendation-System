@@ -1,0 +1,4 @@
+Procfile
+flask.log
+config.ini
+venv
