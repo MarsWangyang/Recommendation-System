@@ -1,6 +1,7 @@
 import abc
 import linebot.models as md
 import json
+import copy
 
 
 class Base(metaclass=abc.ABCMeta):
@@ -10,9 +11,9 @@ class Base(metaclass=abc.ABCMeta):
         return NotImplementedError
 
     @classmethod
-    def processJson(cls, jsonFile: dict):
+    def processJson(cls, jsonFile):
         '''
-            Address json file that is load in by Redis
+            Address complete .json and send to line-bot
         '''
         cls._msgType = jsonFile.get('type')
         cls.returnArr = []
@@ -44,11 +45,11 @@ class Base(metaclass=abc.ABCMeta):
         elif cls._msgType == 'video':
             cls.returnArr.append(
                 md.VideoSendMessage.new_from_json_dict(jsonFile))
-        print(cls.returnArr)
+        # print(cls.returnArr)
         return cls.returnArr
 
     @classmethod
-    def displayBotTemplate(cls, botInfo: list) -> dict:
+    def displayBotTemplate(cls, botInfo: list) -> list:
         bubble_template_path = './Material/Template/template_bubble.json'
         carousel_template_path = './Material/Template/template_carousel.json'
         flex_template_path = './Material/Template/template_flex_message.json'
@@ -75,9 +76,22 @@ class Base(metaclass=abc.ABCMeta):
             # PostBack
             cls.bubble_template['footer']['contents'][1]['action']['data'] = eachBotInfo['postback']
             # Carousel Template
-            botDisplayList.append(cls.bubble_template)
+            cls._copyTemplate = copy.deepcopy(cls.bubble_template)
+            # print(cls._copyTemplate)
+            botDisplayList.append(cls._copyTemplate)
 
-        cls.carousel_template['contents'] = botDisplayList
-        cls.flex_template['contents'] = cls.carousel_template
-        print("======cls.carousel_template======", cls.carousel_template)
-        return cls.processJson(cls.flex_template)
+        flexDisplayList = []
+        message_number = len(botDisplayList) // 12 + 1
+        last_message = len(botDisplayList) % 12
+        for i in range(message_number):
+            if i == message_number:
+                botDisplayListTemp = botDisplayList[12*i:12*i+last_message]
+            else:
+                botDisplayListTemp = botDisplayList[12*i:12*(i+1)]
+            cls.carousel_template['contents'] = botDisplayListTemp
+            cls.flex_template['contents'] = cls.carousel_template
+            cls._copyFlexTemplate = copy.deepcopy(cls.flex_template)
+
+            flexDisplayList.append(cls.processJson(cls._copyFlexTemplate)[0])
+
+        return flexDisplayList
