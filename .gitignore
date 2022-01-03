@@ -2,3 +2,7 @@ Procfile
 flask.log
 config.ini
 venv
+excel_address.py
+Bot_Info.xlsx
+/RichMenuAddress
+/Material
