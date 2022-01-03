@@ -12,6 +12,8 @@ from .Base import Base
 from .Postback import PostBack
 from .Config import Config
 from .Text import Text
+from .FireStore.user import User
+from .FireStore.userDAO import UserDAO
 import configparser
 import logging
 from linebot.models.events import JoinEvent, PostbackEvent, MemberJoinedEvent, MemberLeftEvent, FollowEvent
@@ -70,8 +72,15 @@ def handle_follow(event):
     with open(path, newline='') as file:
         follow_json = json.load(file)
     reply_follow = Base.processJson(follow_json)
-    line_bot_api.reply_message(
-        event.reply_token, reply_follow)
+    line_bot_api.reply_message(event.reply_token, reply_follow)
+
+    user_id = event.source.user_id
+    profile = line_bot_api.get_profile(user_id)
+    print(profile.display_name)
+    print(profile.user_id)
+    user = User(user_id=user_id, user_name=profile.display_name,
+                status=profile.status_message)
+    UserDAO.save_user(user)
 
 
 @handler.add(PostbackEvent)
