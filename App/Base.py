@@ -81,8 +81,11 @@ class Base(metaclass=abc.ABCMeta):
             botDisplayList.append(cls._copyTemplate)
 
         flexDisplayList = []
-        message_number = len(botDisplayList) // 12 + 1
         last_message = len(botDisplayList) % 12
+        if last_message != 0:
+            message_number = len(botDisplayList) // 12 + 1
+        else:
+            message_number = len(botDisplayList) // 12
         for i in range(message_number):
             if i == message_number:
                 botDisplayListTemp = botDisplayList[12*i:12*i+last_message]

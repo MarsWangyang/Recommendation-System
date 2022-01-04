@@ -76,15 +76,19 @@ class PostBack(Base):
         bot_table_path = 'Bot_Info.xlsx'
         bot_table = pd.read_excel(bot_table_path, engine='openpyxl')
         tags = bot_table['tag_label']
+        print('==========wwww===========\n', tags)
         BotInfoList = []
         if (_postDataData.startswith('list')):
             # pick random 3 bots to give a score
             label = _postDataData.split('list_')[1]
+            print("=====label======\n", label)
             if _postChooseTypeData == 'list_all':
                 # query bot in Bot_info.xlsx
                 for i, eachBotTag in enumerate(tags):
                     eachTag = eval(eachBotTag)
+                    print(f'=====Tag======\n{eachTag}')
                     for tag in eachTag:
+
                         if str(tag).find(label) != -1:
                             BotInfoDict = {
                                 "botName": bot_table.iloc[i].get('linebot_name'),
@@ -95,6 +99,7 @@ class PostBack(Base):
                                 "postback": f"action=display_score_panel&botid={bot_table.iloc[i].get('email')}"
                             }
                             BotInfoList.append(BotInfoDict)
+                print(len(BotInfoList))
                 if len(BotInfoList) > 0:
                     reply_arr = self.displayBotTemplate(BotInfoList)
                 else:
@@ -102,6 +107,7 @@ class PostBack(Base):
                     with open(no_data_path, newline='') as file:
                         reply_json = json.load(file)
                     reply_arr = self.processJson(reply_json)
+                print("=======reply_arr====\n", reply_arr)
                 line_bot_api.reply_message(
                     self._event.reply_token,
                     reply_arr)
