@@ -5,6 +5,8 @@ from urllib.parse import parse_qs
 from linebot.api import LineBotApi
 from .Base import Base
 from .Config import Config
+from .FireStore.botScore import BotScore
+from .FireStore.botScoreDAO import BotScoreDAO
 
 config = Config()
 # Create your own config.ini file, and put your info in config.ini
@@ -123,11 +125,16 @@ class PostBack(Base):
     @_decoratorAction
     def _Score(self):
         '''
-            @Author: Issac Huang
+            @Author: Isaac Huang
             This method is for FireStore API. Get Botid and score here.
         '''
+        _postBotIDData = self._postData.get('botid')[0]
+        _postScoreData = self._postData.get('score')[0]
+        _whoScoreUserId = self._event.source.user_id
 
-        pass
+        botScore = BotScore(user_id=_whoScoreUserId,
+                            bot_id=_postBotIDData, score=_postScoreData)
+        BotScoreDAO.save_user(botScore)
 
     def getStatus(self):
         return self._textFlag
