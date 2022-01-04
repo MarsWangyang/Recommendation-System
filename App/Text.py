@@ -5,6 +5,7 @@ import jieba
 import jieba.analyse
 import pandas as pd
 import random
+import json
 
 config = Config()
 handler = config.handler
@@ -69,7 +70,13 @@ class Text(Base):
             if self._text != '文字搜尋功能（可以直接在輸入框找尋喔！）':
                 self._keywords = self._extractKeywords()
                 BotInfoList: list = self._searchTable(self._keywords)
-                reply_arr = self.displayBotTemplate(BotInfoList)
+                if len(BotInfoList) > 0:
+                    reply_arr = self.displayBotTemplate(BotInfoList)
+                else:
+                    no_data_path = './Material/Fixed/no_data_path.json'
+                    with open(no_data_path, newline='') as file:
+                        reply_json = json.load(file)
+                    reply_arr = self.processJson(reply_json)
                 line_bot_api.reply_message(
                     self._event.reply_token,
                     reply_arr)

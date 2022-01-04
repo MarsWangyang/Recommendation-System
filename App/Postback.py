@@ -95,9 +95,13 @@ class PostBack(Base):
                                 "postback": f"action=display_score_panel&botid={bot_table.iloc[i].get('email')}"
                             }
                             BotInfoList.append(BotInfoDict)
-
-                reply_arr = self.displayBotTemplate(BotInfoList)
-
+                if len(BotInfoList) > 0:
+                    reply_arr = self.displayBotTemplate(BotInfoList)
+                else:
+                    no_data_path = './Material/Fixed/no_data_path.json'
+                    with open(no_data_path, newline='') as file:
+                        reply_json = json.load(file)
+                    reply_arr = self.processJson(reply_json)
                 line_bot_api.reply_message(
                     self._event.reply_token,
                     reply_arr)
@@ -143,7 +147,6 @@ class PostBack(Base):
         botScore = BotScore(user_id=_whoScoreUserId,
                             bot_id=_postBotIDData, score=_postScoreData)
         BotScoreDAO.save_user(botScore)
-
 
     def getStatus(self):
         return self._textFlag

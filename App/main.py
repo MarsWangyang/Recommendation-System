@@ -92,10 +92,6 @@ def handle_postback(event):
         textStatus = postback.getStatus()
     except:
         pass
-    # data = event.postback.data
-    # print("received data:", data)
-
-    # line_bot_api.reply_message(event.reply_token, get_reply_messages(data))
 
 
 @handler.add(MessageEvent, message=TextMessage)
