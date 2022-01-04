@@ -84,6 +84,8 @@ class Base(metaclass=abc.ABCMeta):
         last_message = len(botDisplayList) % 12
         if last_message != 0:
             message_number = len(botDisplayList) // 12 + 1
+            if message_number > 5:
+                message_number = 5
         else:
             message_number = len(botDisplayList) // 12
         for i in range(message_number):

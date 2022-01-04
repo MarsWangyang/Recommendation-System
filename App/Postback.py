@@ -152,7 +152,7 @@ class PostBack(Base):
 
         botScore = BotScore(user_id=_whoScoreUserId,
                             bot_id=_postBotIDData, score=_postScoreData)
-        BotScoreDAO.save_user(botScore)
+        BotScoreDAO.save_botScore(botScore)
 
     def getStatus(self):
         return self._textFlag
