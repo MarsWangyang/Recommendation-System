@@ -76,17 +76,14 @@ class PostBack(Base):
         bot_table_path = 'Bot_Info.xlsx'
         bot_table = pd.read_excel(bot_table_path, engine='openpyxl')
         tags = bot_table['tag_label']
-        print('==========wwww===========\n', tags)
         BotInfoList = []
         if (_postDataData.startswith('list')):
             # pick random 3 bots to give a score
             label = _postDataData.split('list_')[1]
-            print("=====label======\n", label)
             if _postChooseTypeData == 'list_all':
                 # query bot in Bot_info.xlsx
                 for i, eachBotTag in enumerate(tags):
                     eachTag = eval(eachBotTag)
-                    print(f'=====Tag======\n{eachTag}')
                     for tag in eachTag:
 
                         if str(tag).find(label) != -1:

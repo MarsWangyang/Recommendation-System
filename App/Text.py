@@ -17,11 +17,9 @@ class Text(Base):
         self._event = event
         self._status = status
         self._text = self._event.message.text
-        print(f'=======self._text=======\n{self._text}')
 
     def _extractKeywords(self):
         self._tags = jieba.analyse.extract_tags(self._text, topK=5)
-        print("=======TAG:=======", self._tags)
         for index, tag in enumerate(self._tags):
             if tag.isdigit():
                 self._tags[index] = int(tag)
@@ -34,7 +32,7 @@ class Text(Base):
         '''
             Search Keywords that user text to Bot, and retrieve from Bot_Info.xlsx
         '''
-        bot_table_path = './Bot_info.xlsx'
+        bot_table_path = './Bot_Info.xlsx'
         bot_table = pd.read_excel(bot_table_path, engine='openpyxl')
         bot_label = bot_table['label']
         # print(f'tag: {tags}')
