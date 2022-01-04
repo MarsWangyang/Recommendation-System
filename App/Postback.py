@@ -5,6 +5,8 @@ from urllib.parse import parse_qs
 from linebot.api import LineBotApi
 from .Base import Base
 from .Config import Config
+from .FireStore.botScore import BotScore
+from .FireStore.botScoreDAO import BotScoreDAO
 
 config = Config()
 # Create your own config.ini file, and put your info in config.ini
@@ -55,14 +57,6 @@ class PostBack(Base):
         line_bot_api.reply_message(
             self._event.reply_token,
             self.processJson(reply_json))
-        # except:
-        #     print("//4/4/4//44//44/")
-        #     error_path = './Material/Fixed/action_error.json'
-        #     with open(error_path, newline='') as file:
-        #         reply_json = json.load(file)
-        #     line_bot_api.reply_message(
-        #         self._event.reply_token,
-        #         self.processJson(reply_json))
 
     # @_decoratorAction
     # def _Data(self):
@@ -76,7 +70,6 @@ class PostBack(Base):
         '''
             This method is for Bot carousel.
         '''
-        print('-'*20)
         _postDataData: str = self._postData.get('data')[0]
         _postChooseTypeData: str = self._postData.get('choose_type')[0]
         root_path = './Material/Template'
@@ -89,7 +82,6 @@ class PostBack(Base):
             label = _postDataData.split('list_')[1]
             if _postChooseTypeData == 'list_all':
                 # query bot in Bot_info.xlsx
-                print("*f**f**ef*e*f*e*f*ef")
                 for i, eachBotTag in enumerate(tags):
                     eachTag = eval(eachBotTag)
                     for tag in eachTag:
@@ -140,10 +132,18 @@ class PostBack(Base):
     @_decoratorAction
     def _Score(self):
         '''
-            @Author: Issac Huang
+            @Author: Isaac Huang
             This method is for FireStore API. Get Botid and score here.
         '''
-        pass
+
+        _postBotIDData = self._postData.get('botid')[0]
+        _postScoreData = self._postData.get('score')[0]
+        _whoScoreUserId = self._event.source.user_id
+
+        botScore = BotScore(user_id=_whoScoreUserId,
+                            bot_id=_postBotIDData, score=_postScoreData)
+        BotScoreDAO.save_user(botScore)
+
 
     def getStatus(self):
         return self._textFlag
@@ -156,11 +156,9 @@ class PostBack(Base):
             According to postback data, find corresponding function to call.
         '''
         for pbKey in self._postData.keys():
-            print("pbKey: ", pbKey)
             self.methodCall = '_' + pbKey.capitalize()
             try:
                 self.method = getattr(self, self.methodCall)
-
                 exit = 0
             except:
                 exit = 1

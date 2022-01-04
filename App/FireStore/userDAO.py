@@ -1,15 +1,9 @@
 
 from .user import User
 from google.cloud import firestore
-# from google.auth.credentials import AnonymousCredentials
 
 
 class UserDAO:
-    # 上線後要改
-    # db = firestore.Client(project=os.environ.get('GCP_PROJECT'))
-    # users_ref=db.collection(u'users')
-
-    #db = firestore.Client(project='ccs', credentials=AnonymousCredentials())
 
     db = firestore.Client()
     users_ref = db.collection(u'users')

@@ -3,3 +3,4 @@ flask
 openpyxl
 pandas
 jieba
+google-cloud-firestore
