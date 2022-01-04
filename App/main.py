@@ -12,8 +12,8 @@ from .Base import Base
 from .Postback import PostBack
 from .Config import Config
 from .Text import Text
-from .FireStore.user import User
-from .FireStore.userDAO import UserDAO
+# from .FireStore.user import User
+# from .FireStore.userDAO import UserDAO
 import configparser
 import logging
 from linebot.models.events import JoinEvent, PostbackEvent, MemberJoinedEvent, MemberLeftEvent, FollowEvent

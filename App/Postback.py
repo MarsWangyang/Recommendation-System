@@ -35,65 +35,82 @@ class PostBack(Base):
         key = 'action'
         root_path = './Material/Fixed'
         _postActionData: str = self._postData.get(key)[0]
-        try:
-            adjoint_path = os.path.join(
-                root_path, _postActionData + '.json')
-            with open(adjoint_path, newline='') as file:
-                reply_json = json.load(file)
-                if (_postActionData == 'choose_pick_type.json'):
-                    for i in range(2):
-                        reply_json['quickReply']['items'][i]['action']['data'] = "data=" + \
-                            self._postData['store_label_data'][0]
+        # try:
+        adjoint_path = os.path.join(
+            root_path, _postActionData + '.json')
+        with open(adjoint_path, newline='') as file:
+            reply_json = json.load(file)
+        if _postActionData == 'choose_pick_type':
+            reply_json['quickReply']['items'][0]['action']['data'] = "choose_type=list_all" + \
+                "&" + "data=" + self._postData['store_label_data'][0]
 
-                if (_postActionData == 'display_score_panel.json'):
-                    for i in range(5):
-                        reply_json['quickReply']['items'][i]['action']['data'] = \
-                            f"botid={self._postData['botid'][0]}&score={i+1}"
+            reply_json['quickReply']['items'][1]['action']['data'] = "choose_type=list_recommend" + \
+                "&" + "data=" + self._postData['store_label_data'][0]
 
-            line_bot_api.reply_message(
-                self._event.reply_token,
-                self.processJson(reply_json))
-        except:
-            error_path = './Material/Fixed/action_error.json'
-            with open(error_path, newline='') as file:
-                reply_json = json.load(file)
-            line_bot_api.reply_message(
-                self._event.reply_token,
-                self.processJson(reply_json))
+        if _postActionData == 'display_score_panel':
+            for i in range(5):
+                reply_json['quickReply']['items'][i]['action']['data'] = \
+                    f"botid={self._postData['botid'][0]}&score={i+1}"
+
+        line_bot_api.reply_message(
+            self._event.reply_token,
+            self.processJson(reply_json))
+        # except:
+        #     print("//4/4/4//44//44/")
+        #     error_path = './Material/Fixed/action_error.json'
+        #     with open(error_path, newline='') as file:
+        #         reply_json = json.load(file)
+        #     line_bot_api.reply_message(
+        #         self._event.reply_token,
+        #         self.processJson(reply_json))
+
+    # @_decoratorAction
+    # def _Data(self):
+    #     '''
+    #         the format of this postback data should be data=list_XXX to generate bubble message.
+    #     '''
+    #     pass
 
     @_decoratorAction
-    def _Data(self):
+    def _Choose_type(self):
         '''
-            This method is for Bot carousel, and the format of this postback data should be data=list_XXX to generate bubble message.
+            This method is for Bot carousel.
         '''
-        key = 'data'
-        _postDataData: str = self._postData.get(key)[0]
+        print('-'*20)
+        _postDataData: str = self._postData.get('data')[0]
+        _postChooseTypeData: str = self._postData.get('choose_type')[0]
         root_path = './Material/Template'
-        bot_table_path = './Bot_Info.xlsx'
+        bot_table_path = 'Bot_Info.xlsx'
         bot_table = pd.read_excel(bot_table_path, engine='openpyxl')
-        tags = bot_table['tags']
+        tags = bot_table['tag_label']
         BotInfoList = []
         if (_postDataData.startswith('list')):
             # pick random 3 bots to give a score
             label = _postDataData.split('list_')[1]
-            # query bot in Bot_info.xlsx
-            for i, eachBotTag in enumerate(tags):
-                if str(eachBotTag).find(label) != -1:
-                    BotInfoDict = {
-                        "botName": bot_table.iloc[i].get('linebot_name'),
-                        "intro": bot_table.iloc[i].get('Intro'),
-                        "authorName": bot_table.iloc[i].get('student_name'),
-                        "tags": bot_table.iloc[i].get('tags'),
-                        "uri": bot_table.iloc[i].get('linebot_url'),
-                        "postback": f"action=display_score_panel&botid={bot_table.iloc[i].get('email')}"
-                    }
-                    BotInfoList.append(BotInfoDict)
+            if _postChooseTypeData == 'list_all':
+                # query bot in Bot_info.xlsx
+                print("*f**f**ef*e*f*e*f*ef")
+                for i, eachBotTag in enumerate(tags):
+                    eachTag = eval(eachBotTag)
+                    for tag in eachTag:
+                        if str(tag).find(label) != -1:
+                            BotInfoDict = {
+                                "botName": bot_table.iloc[i].get('linebot_name'),
+                                "intro": bot_table.iloc[i].get('Intro'),
+                                "authorName": bot_table.iloc[i].get('student_name'),
+                                "tags": bot_table.iloc[i].get('tags'),
+                                "uri": bot_table.iloc[i].get('linebot_url'),
+                                "postback": f"action=display_score_panel&botid={bot_table.iloc[i].get('email')}"
+                            }
+                            BotInfoList.append(BotInfoDict)
 
-        reply_arr = self.displayBotTemplate(BotInfoList)
+                reply_arr = self.displayBotTemplate(BotInfoList)
 
-        line_bot_api.reply_message(
-            self._event.reply_token,
-            reply_arr)
+                line_bot_api.reply_message(
+                    self._event.reply_token,
+                    reply_arr)
+            elif _postChooseTypeData == 'list_recommend':
+                pass
 
     @_decoratorAction
     def _Menu(self):
@@ -126,7 +143,6 @@ class PostBack(Base):
             @Author: Issac Huang
             This method is for FireStore API. Get Botid and score here.
         '''
-
         pass
 
     def getStatus(self):
@@ -140,11 +156,15 @@ class PostBack(Base):
             According to postback data, find corresponding function to call.
         '''
         for pbKey in self._postData.keys():
+            print("pbKey: ", pbKey)
             self.methodCall = '_' + pbKey.capitalize()
             try:
                 self.method = getattr(self, self.methodCall)
 
+                exit = 0
             except:
+                exit = 1
                 print(
                     f'Method {self.methodCall} is not Implemented/Error.')
-            self.method()
+            if exit == 0:
+                self.method()
